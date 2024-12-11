@@ -76,15 +76,20 @@ object RoomService {
 
     // Encontra uma sala pelo nome ou ID
     fun findByNameOrId(nameOrId: String?): RoomDto? {
-        println("Searching for room with param: $nameOrId") // Log para depuração
-        if (nameOrId != null) {
-            return if (nameOrId.isDigitsOnly()) {
-                findById(nameOrId.toLong())
-            } else {
-                findByName(nameOrId)
-            }
+        if (nameOrId.isNullOrBlank()) {
+            // Retorna um valor padrão ou nulo caso o parâmetro seja inválido
+            return null
         }
-        return null
+
+        return if (nameOrId.isDigitsOnly()) {
+            try {
+                findById(nameOrId.toLong())
+            } catch (e: NumberFormatException) {
+                null // Retorna null caso a conversão falhe
+            }
+        } else {
+            findByName(nameOrId)
+        }
     }
 
     // Adiciona uma nova sala à lista
